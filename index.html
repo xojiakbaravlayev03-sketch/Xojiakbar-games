@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XOJIAKBAR VIBES HERO RUN</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  user-select:none;
+}
+
+body{
+  overflow:hidden;
+  background:#050816;
+  font-family:Arial,sans-serif;
+}
+
+#game{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  background:linear-gradient(#07152f,#182b4d 60%,#07101f);
+}
+
+/* OY */
+#moon{
+  position:absolute;
+  right:25px;
+  top:30px;
+  width:75px;
+  height:75px;
+  border-radius:50%;
+  background:white;
+  box-shadow:0 0 35px white;
+}
+
+/* TOG'LAR */
+.mountain{
+  position:absolute;
+  bottom:110px;
+  width:0;
+  height:0;
+  border-left:130px solid transparent;
+  border-right:130px solid transparent;
+  border-bottom:230px solid #101827;
+}
+
+.m1{left:0}
+.m2{left:40%;transform:scale(1.3)}
+.m3{right:-80px;transform:scale(.9)}
+
+/* YER */
+#ground{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:110px;
+  background:#0b1220;
+  border-top:4px solid #22d3ee;
+}
+
+/* QAHRAМON */
+#hero{
+  position:absolute;
+  left:70px;
+  bottom:110px;
+  width:65px;
+  height:105px;
+  z-index:10;
+  transition:left .08s,bottom .12s;
+}
+
+.head{
+  width:38px;
+  height:38px;
+  margin:auto;
+  border-radius:50%;
+  background:#d99b72;
+  border:2px solid white;
+}
+
+.body{
+  width:50px;
+  height:50px;
+  margin:auto;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ef4444,#312e81);
+  border:2px solid white;
+  box-shadow:0 0 15px #ef4444;
+}
+
+.logo{
+  position:absolute;
+  top:52px;
+  width:100%;
+  color:white;
+  font-size:7px;
+  font-weight:bold;
+  text-align:center;
+}
+
+.leg{
+  position:absolute;
+  bottom:0;
+  width:11px;
+  height:25px;
+  background:#111827;
+  border-radius:5px;
+}
+
+.leg1{left:16px}
+.leg2{right:16px}
+
+/* COIN */
+.coin{
+  position:absolute;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:#facc15;
+  border:3px solid white;
+  box-shadow:0 0 20px #facc15;
+  z-index:4;
+}
+
+/* DUSHMAN */
+.enemy{
+  position:absolute;
+  bottom:110px;
+  width:55px;
+  height:75px;
+  border-radius:15px;
+  background:linear-gradient(#7f1d1d,#111827);
+  border:2px solid #ef4444;
+  z-index:6;
+}
+
+.enemy:before{
+  content:"👿";
+  position:absolute;
+  font-size:35px;
+  left:8px;
+  top:12px;
+}
+
+/* BOSS */
+.boss{
+  position:absolute;
+  bottom:110px;
+  width:100px;
+  height:125px;
+  border-radius:20px;
+  background:linear-gradient(#581c87,#111827);
+  border:3px solid #c084fc;
+  box-shadow:0 0 25px #a855f7;
+  z-index:7;
+}
+
+.boss:before{
+  content:"👹";
+  position:absolute;
+  font-size:65px;
+  left:15px;
+  top:20px;
+}
+
+/* UI */
+#ui{
+  position:absolute;
+  top:15px;
+  left:15px;
+  z-index:30;
+  color:white;
+}
+
+#title{
+  color:#22d3ee;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.stat{
+  margin:3px 0;
+  font-size:16px;
+}
+
+/* EFFEKT */
+.hit{
+  position:absolute;
+  color:#facc15;
+  font-size:30px;
+  font-weight:bold;
+  animation:hit .5s forwards;
+  z-index:50;
+}
+
+@keyframes hit{
+  from{
+    transform:scale(.5);
+    opacity:1;
+  }
+  to{
+    transform:scale(1.5) translateY(-50px);
+    opacity:0;
+  }
+}
+
+/* TUGMALAR */
+.controls{
+  position:absolute;
+  bottom:15px;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:40;
+}
+
+button{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:2px solid #22d3ee;
+  background:rgba(5,15,35,.9);
+  color:white;
+  font-size:23px;
+  box-shadow:0 0 15px rgba(34,211,238,.5);
+}
+
+button:active{
+  transform:scale(.88);
+}
+
+/* LEVEL */
+#level{
+  position:absolute;
+  top:15px;
+  right:15px;
+  color:white;
+  font-size:16px;
+  z-index:30;
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<div id="moon"></div>
+
+<div class="mountain m1"></div>
+<div class="mountain m2"></div>
+<div class="mountain m3"></div>
+
+<div id="ui">
+  <div id="title">🦸 XOJIAKBAR VIBES</div>
+  <div class="stat" id="score">🏆 0</div>
+  <div class="stat" id="lives">❤️❤️❤️</div>
+</div>
+
+<div id="level">LEVEL 1</div>
+
+<!-- QAHRAMON -->
+<div id="hero">
+  <div class="head"></div>
+  <div class="body"></div>
+  <div class="logo">xojiakbar_vibes</div>
+  <div class="leg leg1"></div>
+  <div class="leg leg2"></div>
+</div>
+
+<div id="ground"></div>
+
+<!-- TUGMALAR -->
+<div class="controls">
+  <button onclick="moveLeft()">⬅️</button>
+  <button onclick="moveDown()">⬇️</button>
+  <button onclick="jump()">⬆️</button>
+  <button onclick="moveRight()">➡️</button>
+  <button onclick="attack()">💥</button>
+  <button onclick="climb()">🧗</button>
+</div>
+
+</div>
+
+<script>
+
+const game=document.getElementById("game");
+const hero=document.getElementById("hero");
+
+let x=70;
+let y=110;
+
+let score=0;
+let lives=3;
+let level=1;
+
+let jumping=false;
+
+function update(){
+  hero.style.left=x+"px";
+  hero.style.bottom=y+"px";
+}
+
+/* CHAP */
+function moveLeft(){
+  x-=35;
+
+  if(x<5)x=5;
+
+  update();
+}
+
+/* O'NG */
+function moveRight(){
+  x+=35;
+
+  if(x>window.innerWidth-80)
+    x=window.innerWidth-80;
+
+  update();
+}
+
+/* SAKRASH */
+function jump(){
+
+  if(jumping)return;
+
+  jumping=true;
+
+  let start=y;
+
+  let up=setInterval(()=>{
+
+    y+=9;
+    update();
+
+    if(y>=start+130){
+
+      clearInterval(up);
+
+      let down=setInterval(()=>{
+
+        y-=9;
+        update();
+
+        if(y<=start){
+
+          y=start;
+          clearInterval(down);
+
+          jumping=false;
+        }
+
+      },25);
+    }
+
+  },25);
+}
+
+/* PASTGA */
+function moveDown(){
+
+  y-=35;
+
+  if(y<110)y=110;
+
+  update();
+}
+
+/* CLIMB */
+function climb(){
+
+  y+=50;
+
+  if(y>330)y=330;
+
+  update();
+}
+
+/* HUJUM */
+function attack(){
+
+  let effect=document.createElement("div");
+
+  effect.className="hit";
+  effect.innerText="💥";
+
+  effect.style.left=(x+50)+"px";
+  effect.style.bottom=(y+50)+"px";
+
+  game.appendChild(effect);
+
+  setTimeout(()=>{
+    effect.remove();
+  },500);
+
+  score+=5;
+
+  updateScore();
+}
+
+/* SCORE */
+function updateScore(){
+
+  document.getElementById("score").innerText="🏆 "+score;
+
+  if(score>=100 && level===1){
+    level=2;
+    document.getElementById("level").innerText="LEVEL 2 🔥";
+  }
+
+  if(score>=250 && level===2){
+    level=3;
+    document.getElementById("level").innerText="LEVEL 3 👹";
+  }
+}
+
+/* COIN */
+function createCoin(){
+
+  let coin=document.createElement("div");
+
+  coin.className="coin";
+
+  coin.style.left=
+    Math.random()*(window.innerWidth-50)+"px";
+
+  coin.style.bottom=
+    (150+Math.random()*250)+"px";
+
+  game.appendChild(coin);
+
+  let timer=setInterval(()=>{
+
+    if(!coin.parentNode){
+      clearInterval(timer);
+      return;
+    }
+
+    let a=hero.getBoundingClientRect();
+    let b=coin.getBoundingClientRect();
+
+    if(
+      a.left<b.right &&
+      a.right>b.left &&
+      a.top<b.bottom &&
+      a.bottom>b.top
+    ){
+
+      coin.remove();
+
+      score+=10;
+
+      updateScore();
+
+      clearInterval(timer);
+    }
+
+  },50);
+
+  setTimeout(()=>{
+    if(coin.parentNode)coin.remove();
+    clearInterval(timer);
+  },7000);
+}
+
+setInterval(createCoin,1400);
+
+/* DUSHMAN */
+function createEnemy(){
+
+  let enemy=document.createElement("div");
+
+  enemy.className="enemy";
+
+  enemy.style.left=
+    window.innerWidth+"px";
+
+  game.appendChild(enemy);
+
+  let pos=window.innerWidth;
+
+  let move=setInterval(()=>{
+
+    pos-=4;
+
+    enemy.style.left=pos+"px";
+
+    let a=hero.getBoundingClientRect();
+    let b=enemy.getBoundingClientRect();
+
+    if(
+      a.left<b.right &&
+      a.right>b.left &&
+      a.bottom>b.top &&
+      a.top<b.bottom
+    ){
+
+      if(lives>0){
+
+        lives--;
+
+        document.getElementById("lives").innerText=
+          "❤️".repeat(lives);
+
+        enemy.remove();
+
+        if(lives<=0){
+
+          alert("GAME OVER 😭\nScore: "+score);
+
+          location.reload();
+        }
+      }
+
+      clearInterval(move);
+    }
+
+    if(pos<-80){
+
+      enemy.remove();
+      clearInterval(move);
+    }
+
+  },30);
+}
+
+setInterval(createEnemy,4500);
+
+/* KEYBOARD */
+document.addEventListener("keydown",(e)=>{
+
+  if(e.key==="ArrowLeft")moveLeft();
+  if(e.key==="ArrowRight")moveRight();
+  if(e.key==="ArrowUp")jump();
+  if(e.key==="ArrowDown")moveDown();
+  if(e.key===" ")attack();
+
+});
+
+update();
+
+</script>
+
+</body>
+  </html>
